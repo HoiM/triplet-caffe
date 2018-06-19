@@ -1,0 +1,46 @@
+###################
+#
+# Network Structure
+#
+###################
+
+
+layer {
+    name: "L2_norm"
+    type: "Python"
+    bottom: "fc7_2"
+    top: "L2_norm"
+    python_param {
+        module: "l2norm_layer"
+        layer: "L2NormLayer"
+    }
+}
+
+layer {
+    name: "tripletsample"
+    type: "Python"
+    bottom: "L2_norm"
+    bottom: "label_ID"
+    top: "anchor"
+    top: "positive"
+    top: "negative"
+    python_param {
+    module: "tripletsample_layer"
+    layer: "TripletSampleLayer"
+    }
+}
+
+layer {
+    name: "tripletloss"
+    type: "Python"
+    bottom: "anchor"
+    bottom: "positive"
+    bottom: "negative"
+    top: "loss"
+    python_param {
+        module: "tripletloss_layer"
+        layer: "TripletLayer"
+        #param_str: "'margin': 0.2"
+    }
+    loss_weight: 1
+}
